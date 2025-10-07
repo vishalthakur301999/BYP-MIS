@@ -1,0 +1,30 @@
+export type Tendency = "Low" | "Medium" | "High";
+export type AzollaStatus = "Remaining" | "Destroyed" | "Data Unavailable" | "Not Azolla Beneficiary";
+
+export type Household = {
+  id: string;
+  date: string;
+  name: string;
+  village: string;
+  livelihoodDescriptionandnregaWork?: string;
+  familyNregaStatus?: "Yes" | "No" | "Did in the Past";
+  landholding?: boolean;
+  membersInHousehold?: number;
+  childrenInHousehold?: number;
+  familyNotes?: string;
+  kalamandirChicksAlive?: number;
+  femaleKalamandirChicksAlive?: number;
+  mortalityCategory?: string[];
+  mortalityDescription?: string;
+  ownPoultry?: string;
+  careDescription?: string;
+  azollaStatus?: AzollaStatus;
+  azollaNotes?: string;
+  sellLocation?: string[];
+  sellingDescription?: string;
+  entrepreneurialTendencies?: Tendency;
+  entrepreneurialAspirations?: string;
+  fpoAcceptance?: boolean;
+  additionalNotes?: string;
+  syncedAt?: any;
+};
