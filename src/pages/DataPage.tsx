@@ -23,7 +23,7 @@ export function DataPage({
                              details,
                              closeDetails,
                              showForm, setShowForm,
-                             onUpdated
+                             onUpdateRecord
                          }:{
     villages: string[];
     filtered: Household[];
@@ -37,7 +37,7 @@ export function DataPage({
     details: Household | null;
     closeDetails: () => void;
     showForm: boolean; setShowForm: (v: boolean) => void;
-    onUpdated: () => void;
+    onUpdateRecord: (updated: Household) => Promise<void>;
 }) {
     const toggleSort = (key: keyof Household) =>
         setSort(s => s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
@@ -95,7 +95,7 @@ export function DataPage({
 
             {/* Details */}
             {/* Details */}
-            <DetailsDialog item={details} onClose={closeDetails} villages={villages} onUpdated={onUpdated} />
+            <DetailsDialog item={details} onClose={closeDetails} villages={villages} onUpdated={onUpdateRecord} />
         </section>
     );
 }

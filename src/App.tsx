@@ -143,18 +143,36 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+// in App.tsx
     async function hydrateFromIDB() {
         if (!dbReady.current) return;
-
-        const items   = await all<Household>(COLLECTION);
+        const items = await all<Household>(COLLECTION);
         const pending = await all<Household>(PENDING);
 
-        // Prefer pending over server copy for the same id
-        const map = new Map<string, Household>();
-        for (const r of items)   map.set(r.id, r);
-        for (const r of pending) map.set(r.id, r);  // overwrite if same id
+        // dedupe by id; pending overrides collection
+        const byId = new Map<string, Household>();
+        for (const r of items) byId.set(String(r.id), r);
+        for (const r of pending) byId.set(String(r.id), r);
 
-        setRecords(Array.from(map.values()));
+        setRecords(Array.from(byId.values()));
+    }
+
+    // in App.tsx
+    async function updateRecord(updated: Household) {
+        const isPending = String(updated.id).startsWith("pending_");
+
+        if (isPending) {
+            // just update the local pending row
+            await put(PENDING, updated as any);
+        } else {
+            // optimistic local cache update
+            await put(COLLECTION, updated as any);
+            // queue for server merge on next sync
+            await put(PENDING, updated as any);
+        }
+
+        await hydrateFromIDB();
+        syncNow();
     }
 
     async function importRecordsBulk(records: Household[]) {
@@ -172,6 +190,7 @@ export default function App() {
         await bulkReplace(COLLECTION, rows);
     }
 
+// in App.tsx
     async function syncNow() {
         if (!online || configNeeded) return;
         setSyncState("syncing");
@@ -179,15 +198,24 @@ export default function App() {
             const pending = await all<Household>(PENDING);
             if (pending.length) {
                 const batch = writeBatch(db);
+
                 pending.forEach((it) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const { id, ...data } = it;
-                    const ref = doc(collection(db, "households"));
-                    batch.set(ref, { ...data, syncedAt: serverTimestamp() });
+                    const { id, ...data } = it as any;
+                    if (String(id).startsWith("pending_")) {
+                        // CREATE new doc
+                        const ref = doc(collection(db, "households"));
+                        batch.set(ref, { ...data, syncedAt: serverTimestamp() });
+                    } else {
+                        // UPDATE existing doc (merge)
+                        const ref = doc(collection(db, "households"), String(id));
+                        batch.set(ref, { ...data, syncedAt: serverTimestamp() }, { merge: true });
+                    }
                 });
+
                 await batch.commit();
                 await clear(PENDING);
             }
+
             await fetchFromFirestore();
             await hydrateFromIDB();
             setSyncState("synced");
@@ -252,7 +280,7 @@ export default function App() {
                             details={details}
                             closeDetails={() => setDetails(null)}
                             showForm={showForm} setShowForm={setShowForm}
-                            onUpdated={hydrateFromIDB}   // 👈 added
+                            onUpdateRecord={updateRecord}
                         />
                     )}
 

@@ -1,8 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Household } from "@/types";
 import { RecordEditForm } from "@/components/data/RecordEditForm";
-import { put } from "@/lib/idb";
-import { PENDING } from "@/lib/idb";
 
 export function DetailsDialog({
                                   item,
@@ -13,7 +11,7 @@ export function DetailsDialog({
     item: Household | null;
     onClose: () => void;
     villages: string[];
-    onUpdated: () => void;   // we'll call this to refresh records
+    onUpdated: (updated: Household) => Promise<void>;
 }) {
     return (
         <Dialog open={!!item} onOpenChange={(o) => !o && onClose()}>
@@ -28,11 +26,7 @@ export function DetailsDialog({
                         villages={villages}
                         onCancel={onClose}
                         onSave={async (updated) => {
-                            // 1️⃣ Update local IDB
-                            await put(PENDING, updated as any);
-                            // 2️⃣ Notify parent to refresh state (hydrateFromIDB)
-                            onUpdated();
-                            // 3️⃣ Close dialog
+                            await onUpdated(updated);
                             onClose();
                         }}
                     />
