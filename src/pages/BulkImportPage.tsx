@@ -75,8 +75,8 @@ const guessField = (header: string): keyof Household | "SKIP" => {
     if (h.includes("land")) return "landholding";
     if (h.includes("female") && h.includes("chick")) return "femaleKalamandirChicksAlive";
     if (h.includes("kalamandir") || (h.includes("chick") && !h.includes("female"))) return "kalamandirChicksAlive";
-    if (h.includes("nrega")) return "nregaWork";
-    if (h.includes("livelihood")) return "livelihoodDescription";
+    if (h.includes("nrega")) return "familyNregaStatus";
+    if (h.includes("livelihood")) return "livelihoodDescriptionandnregaWork";
     if (h.includes("mortality") && h.includes("category")) return "mortalityCategory";
     if (h.includes("mortality")) return "mortalityDescription";
     if (h.includes("sell")) return "sellLocation";
@@ -108,7 +108,7 @@ function parseDateToISO(input: any): string {
     const s = String(input).trim();
 
     // Case 2: dd/mm/yy or dd/mm/yyyy
-    const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+    const m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
     if (m) {
         const [, d, mm, y] = m;
         const year = y.length === 2 ? (Number(y) + 2000) : Number(y);

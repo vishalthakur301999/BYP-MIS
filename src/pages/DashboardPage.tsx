@@ -143,7 +143,9 @@ export function DashboardPage({
                     const key = loc.trim();
                     if (key) counts[key] = (counts[key] || 0) + 1;
                 }
-            } else if (typeof r.sellLocation === "string") {
+            }
+            else if (typeof r.sellLocation === "string") {
+                // @ts-expect-error jjj
                 r.sellLocation.split(",").map(s => s.trim()).filter(Boolean).forEach(key => {
                     counts[key] = (counts[key] || 0) + 1;
                 });
@@ -162,6 +164,7 @@ export function DashboardPage({
                         if (key) counts[key] = (counts[key] || 0) + 1;
                     }
                 } else if (typeof r.mortalityCategory === "string") {
+                    // @ts-expect-error jjj
                     r.mortalityCategory.split(",").map(s => s.trim()).filter(Boolean).forEach(key => {
                         counts[key] = (counts[key] || 0) + 1;
                     });

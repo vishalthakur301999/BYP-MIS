@@ -20,6 +20,7 @@ type SectionDoc = {
     updatedAt?: any; // Firestore Timestamp
 };
 
+
 const SEED: SectionDoc[] = [
     {
         id: "key-problems-identified",
@@ -287,7 +288,7 @@ export default function RecommendationsPage() {
 
                                     {/* Editor */}
                                     <Textarea
-                                        ref={(el) => (taRefs.current[sec.id] = el)}
+                                        ref={(el) => { taRefs.current[sec.id] = el; }}
                                         value={draftVal}
                                         onChange={(e) => setDrafts((d) => ({ ...d, [sec.id]: e.target.value }))}
                                         rows={18}

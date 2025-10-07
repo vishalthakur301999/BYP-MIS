@@ -8,7 +8,7 @@ export type Household = {
   village: string;
   livelihoodDescriptionandnregaWork?: string;
   familyNregaStatus?: "Yes" | "No" | "Did in the Past";
-  landholding?: boolean;
+  landholding: boolean;
   membersInHousehold?: number;
   childrenInHousehold?: number;
   familyNotes?: string;
@@ -24,7 +24,7 @@ export type Household = {
   sellingDescription?: string;
   entrepreneurialTendencies?: Tendency;
   entrepreneurialAspirations?: string;
-  fpoAcceptance?: boolean;
+  fpoAcceptance: boolean;
   additionalNotes?: string;
   syncedAt?: any;
 };
