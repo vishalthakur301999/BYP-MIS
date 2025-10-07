@@ -12,6 +12,11 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
+      {
+        rules: {
+          "@typescript-eslint/no-explicit-any": "off",
+        },
+      },
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],

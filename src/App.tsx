@@ -180,6 +180,7 @@ export default function App() {
             if (pending.length) {
                 const batch = writeBatch(db);
                 pending.forEach((it) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { id, ...data } = it;
                     const ref = doc(collection(db, "households"));
                     batch.set(ref, { ...data, syncedAt: serverTimestamp() });

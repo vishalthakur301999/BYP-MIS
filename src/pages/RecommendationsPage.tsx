@@ -97,7 +97,7 @@ function fmtUpdated(ts: any) {
     try {
         if (ts?.toDate) return format(ts.toDate(), "PP p");
         if (ts instanceof Date) return format(ts, "PP p");
-    } catch {}
+    } catch { /* empty */ }
     return "—";
 }
 
@@ -230,7 +230,6 @@ export default function RecommendationsPage() {
         setNewTitle("");
         setNewContent("");
     };
-
     return (
         <div className="space-y-6">
             {/* Page actions */}
